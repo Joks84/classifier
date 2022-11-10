@@ -77,7 +77,7 @@ def preprocessTrainImages(path: str, degrees_increase: int or float) -> np.array
     return images_array
 
 
-def createTrainTestData(images_array: np.array) -> set:
+def createTrainTestDataLinearRegression(images_array: np.array) -> set:
     """
     Creates and returns data for train and test.
     Params:
@@ -101,3 +101,14 @@ def createTrainTestData(images_array: np.array) -> set:
     y_test = [item[-1] for item in test_set]
 
     return X_train, X_test, y_train, y_test
+
+
+def createTrainDataLogisticRegression(images_array: np.array) -> set:
+    """
+    Creates and returns data for training from list of image data.
+    Params:
+        images_array(np.array): The array of image data for testing.
+    """
+    x_train = [item[:1001] for item in images_array]
+    y_train = [item[-1] for item in images_array]
+    return x_train, y_train
