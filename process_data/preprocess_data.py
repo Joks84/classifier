@@ -1,4 +1,5 @@
 import os
+import random
 import numpy as np
 from PIL import Image
 
@@ -74,3 +75,29 @@ def preprocessTrainImages(path: str, degrees_increase: int or float) -> np.array
     
     images_array = np.asarray(images_matrix)
     return images_array
+
+
+def createTrainTestData(images_array: np.array) -> set:
+    """
+    Creates and returns data for train and test.
+    Params:
+        images_array(np.array): The array of data from which train and test data is created.
+
+    Returns:
+        train_test_data(set): The set of training and test data.
+    """
+    # shuffle the data
+    random.shuffle(images_array)
+    # split the array to test and train sets in 20:80 ratio
+    test_set, train_one, train_two = np.split(images_array, [int(len(images_array)*0.2), int(len(images_array)*0.8)])
+    train_set = np.concatenate((train_one, train_two))
+
+    # divide train set to X and y
+    X_train = [item[:1001] for item in train_set]
+    y_train = [item[-1] for item in train_set]
+    # print(len(y_train))
+    # divide test set to X and y
+    X_test = [item[:1001] for item in test_set]
+    y_test = [item[-1] for item in test_set]
+
+    return X_train, X_test, y_train, y_test

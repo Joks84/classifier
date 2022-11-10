@@ -3,7 +3,7 @@ from sklearn import metrics
 from matplotlib import pyplot
 import numpy as np
 
-def logisticRegressionScore(model: linear_model.LogisticRegression, input: list, label: list) -> float:
+def coefficientOfDetermination(model: linear_model.LogisticRegression or linear_model.LinearRegression, input: list, label: list) -> float:
     """
     Returns the coefficient of determination for logistic regression model.
     Params:
