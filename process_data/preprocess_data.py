@@ -2,6 +2,7 @@ import os
 import random
 import numpy as np
 from PIL import Image
+from sklearn import linear_model
 
 
 # pixel size for resizing the images
@@ -112,3 +113,30 @@ def createTrainDataLogisticRegression(images_array: np.array) -> set:
     x_train = [item[:1001] for item in images_array]
     y_train = [item[-1] for item in images_array]
     return x_train, y_train
+
+
+def testImageToArray(path: str, pixel_size: tuple) -> np.array:
+    """
+    Transforms the test image to array and returns it.
+    Params:
+        path(str): The path to test image.
+        pixel_size(tuple): The tuple of pixel size.
+    Returns:
+        image_array(np.array): The test image array
+    """
+    image = Image.open(path).resize(pixel_size)
+    matrix = np.asarray(image).astype("uint8")
+    image_array = matrix.flatten()[:1001]
+    return image_array
+
+
+def evaluateUnseenImage(path: str, model: linear_model.LogisticRegression, pixel_size: tuple) -> list:
+    """
+    Evaluates and categorizes an unseen image and returns the predicted class for the image.
+    Params:
+        path (str): The path to unseen image.
+        model(linear_model.LogisticRegression): The model to evaluate.
+        pixel_size(tuple): The size of the image.
+    """
+    test_image = testImageToArray(path, pixel_size)
+    return model.predict([test_image])
