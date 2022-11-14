@@ -50,3 +50,17 @@ def showPlot(y_axis: list, x_axis: list, y_axis_label: str, x_axis_label: str, l
     pyplot.ylabel(y_axis_label)
     pyplot.legend()
     pyplot.show()
+
+
+def getCrossEntropyLoss(model: linear_model.LogisticRegression, inputs: list, labels: list) -> float:
+    """
+    Returns cross entropy loss (error).
+    Params:
+        model(linear_model.LogisticRegression): The model for which cross entropy loss is examined.
+        inputs(list): The list of input data.
+        labels(list): The list of labels/outputs for input data.
+
+    Return:
+        loss(float): The value for the cross entropy loss.
+    """
+    return metrics.log_loss(labels, model.predict_proba(inputs))

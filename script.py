@@ -5,7 +5,7 @@ from sklearn import metrics
 
 # LOGISTIC REGRESSION
 # get the images array
-images_array = preprocess_data.preprocessTrainImages("process_data/photos", 10)
+images_array = preprocess_data.preprocessTrainImages("process_data/photos", 15)
 
 # get the inputs and the labels
 X, y = preprocess_data.createTrainDataLogisticRegression(images_array)
@@ -26,12 +26,11 @@ recall_score = metrics.recall_score(y, y_predicted)
 print("Recall score is: ", recall_score)
 # evaluate unseen image
 print("Cat: ", preprocess_data.evaluateUnseenImage("test_data/test_images/cat.jpg", model, (100, 100)))
+print("Cross entropy loss: ", evaluate_regression_models.getCrossEntropyLoss(model, X, y))
 # roc curve data
 false_positive_rate, true_positive_rate, thresholds = metrics.roc_curve(y, model.predict(X))
-# # plot ROC curve
-# evaluate_regression_models.showPlot(false_positive_rate, true_positive_rate, "False Positive Rate", "True Positive Rate", "Logistic")
-
-
+# plot ROC curve
+evaluate_regression_models.showPlot(false_positive_rate, true_positive_rate, "False Positive Rate", "True Positive Rate", "Logistic")
 
 
 # LINEAR REGRESSION
