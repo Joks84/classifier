@@ -76,6 +76,40 @@ def preprocessTrainImages(path: str, degrees_increase: int or float) -> np.array
     return images_array
 
 
+def createMulticlassData(path: str, degrees_increase: int or float) -> np.array:
+    """
+    Preprocess multiclass data by assigning the classes and adding noise to the images.
+
+        Params:
+            path (str): Path to the photo's directory.
+            degrees_increase (float or int): The number of degrees with which the image is rotated.
+    """
+    # matrix to store the images pixel
+    images_matrix = []
+    degrees = 0
+
+    for file in os.listdir(path):
+         # get the values for is chestnut or not
+        if "chestnut" in file: target = 1
+        if "dog" in file: target = 2
+        if "cat" in file: target = 3
+        if "bird" in file: target = 4
+
+        while degrees <= 360:
+            # get the image.
+            image = Image.open(f"{path}/{file}").resize(pixel_size)
+            # rotate the image
+            rotated_image = image.rotate(degrees)
+            rotated_image_noise = addNoise(rotated_image)
+            images_matrix.append(imageToArray(rotated_image.convert('RGB'), target))
+            images_matrix.append(imageToArray(rotated_image_noise.convert('RGB'), target))
+            degrees += degrees_increase
+        degrees = 0
+    
+    images_array = np.asarray(images_matrix)
+    return images_array
+
+
 def createTrainTestDataLinearRegression(images_array: np.array) -> set:
     """
     Creates and returns data for train and test.
