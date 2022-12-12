@@ -1,8 +1,6 @@
 import os
-import random
 import numpy as np
 from PIL import Image
-from sklearn import linear_model
 
 
 # pixel size for resizing the images
@@ -87,21 +85,9 @@ def createTrainTestDataLinearRegression(images_array: np.array) -> set:
     Returns:
         train_test_data(set): The set of training and test data.
     """
-    # shuffle the data
-    random.shuffle(images_array)
-    # split the array to test and train sets in 20:80 ratio
-    test_set, train_one, train_two = np.split(images_array, [int(len(images_array)*0.2), int(len(images_array)*0.8)])
-    train_set = np.concatenate((train_one, train_two))
-
-    # divide train set to X and y
-    X_train = [item[:1001] for item in train_set]
-    y_train = [item[-1] for item in train_set]
-    # print(len(y_train))
-    # divide test set to X and y
-    X_test = [item[:1001] for item in test_set]
-    y_test = [item[-1] for item in test_set]
-
-    return X_train, X_test, y_train, y_test
+    x_train = [item[:1001] for item in images_array]
+    y_train = [item[-1] for item in images_array]
+    return x_train, y_train
 
 
 def createTrainDataLogisticRegression(images_array: np.array) -> set:
@@ -110,33 +96,8 @@ def createTrainDataLogisticRegression(images_array: np.array) -> set:
     Params:
         images_array(np.array): The array of image data for testing.
     """
-    x_train = [item[:1001] for item in images_array]
+    x_train = [item[:-1] for item in images_array]
     y_train = [item[-1] for item in images_array]
     return x_train, y_train
 
 
-def testImageToArray(path: str, pixel_size: tuple) -> np.array:
-    """
-    Transforms the test image to array and returns it.
-    Params:
-        path(str): The path to test image.
-        pixel_size(tuple): The tuple of pixel size.
-    Returns:
-        image_array(np.array): The test image array
-    """
-    image = Image.open(path).resize(pixel_size)
-    matrix = np.asarray(image).astype("uint8")
-    image_array = matrix.flatten()[:1001]
-    return image_array
-
-
-def evaluateUnseenImage(path: str, model: linear_model.LogisticRegression, pixel_size: tuple) -> list:
-    """
-    Evaluates and categorizes an unseen image and returns the predicted class for the image.
-    Params:
-        path (str): The path to unseen image.
-        model(linear_model.LogisticRegression): The model to evaluate.
-        pixel_size(tuple): The size of the image.
-    """
-    test_image = testImageToArray(path, pixel_size)
-    return model.predict([test_image])
