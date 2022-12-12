@@ -3,6 +3,7 @@ from train_data import regression_models
 from evaluation import evaluate_regression_models
 from sklearn import metrics, model_selection
 import numpy as np
+import matplotlib.pyplot as plt
 
 # get the preprocessed images array
 images_array = preprocess_data.preprocessTrainImages("process_data/photos/mix", 15)
@@ -18,6 +19,11 @@ coef_determination = evaluate_regression_models.coefficientOfDetermination(model
 y_predict = model.predict(X_test)
 # get the r2 score
 r_squared = metrics.r2_score(y_test, y_predict)
+# get the positive predicted probabilities
+positive_probabilities = model.predict_proba(X_test)[:, 1]
+# calculate area under the roc curve
+roc_score = metrics.roc_auc_score(y_test, positive_probabilities)
+fpr, tpr, _ = metrics.roc_curve(y_test, positive_probabilities)
 
 
 
@@ -31,4 +37,11 @@ print("Recall score is: ", metrics.recall_score(y_test, y_predict))
 print("Report: ", metrics.classification_report(y_test, y_predict))
 print("Log loss: ", metrics.log_loss(y_test, model.predict_proba(X_test)))
 print("Confusion matrix: ", metrics.confusion_matrix(y_test, y_predict))
-# false_positive_rate, true_positive_rate, thresholds = metrics.roc_curve(y_test, y_predict)
+false_positive_rate, true_positive_rate, thresholds = metrics.roc_curve(y_test, y_predict)
+# show roc curve
+plt.plot(fpr, tpr, linestyle="--", label=roc_score)
+plt.title("curve")
+plt.xlabel("FPR")
+plt.ylabel("TPR")
+plt.legend()
+plt.show()
